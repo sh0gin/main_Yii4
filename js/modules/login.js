@@ -57,8 +57,9 @@ function giveInputLogin() { // Срабатывает по нажатию кно
         $obj[$(el).attr("name")] = $(el).val(); // кладём в объект $obj
       });
 
+
     $.ajax({
-      url: "./basic/web/post/load",
+      url: "./basic/web/user/load",
       method: "POST",
       dataType: "json",
       data: $obj,
