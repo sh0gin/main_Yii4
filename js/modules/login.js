@@ -58,7 +58,7 @@ function giveInputLogin() { // Срабатывает по нажатию кно
       });
 
     $.ajax({
-      url: "./basic/controllers/SiteController.php?r=site/index",
+      url: "./basic/web/post/load",
       method: "POST",
       dataType: "json",
       data: $obj,
