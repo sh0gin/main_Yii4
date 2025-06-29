@@ -2,8 +2,9 @@
 
 namespace app\models;
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
-class MyLoginForm extends ActiveRecord {
+class MyLoginForm extends ActiveRecord implements IdentityInterface{
 
     public $login;
     public $password;

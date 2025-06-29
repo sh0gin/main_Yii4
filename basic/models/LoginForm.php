@@ -11,7 +11,7 @@ use yii\base\Model;
  * @property-read User|null $user
  *
  */
-class LoginForm extends Model
+class LoginForm extends Model implements IdentityInterface
 {
     public $username;
     public $password;
@@ -77,5 +77,31 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+
+    public static function findIdentity($id)
+    {
+        // return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // return static::findOne(['access_token' => $token]);
+    }
+
+    public function getId()
+    {
+        // return $this->id;
+    }
+
+    public function getAuthKey()
+    {
+        // return $this->authKey;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // return $this->authKey === $authKey;
     }
 }
