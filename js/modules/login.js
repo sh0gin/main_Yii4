@@ -65,7 +65,9 @@ function giveInputLogin() { // Срабатывает по нажатию кно
       data: $obj,
       success: function ($response) {
         // если данные формы прошли валидацию, мы скрывает страницу логина, отображаем блоги, а также добавляем token в localstorage. Вызываем функцию для проверки статуса кнопок
+        console.log($response);
         if ($response.status) {
+          
           removeInvalidInput();
           loginHide();
           $("a[data-section=blogs]").addClass("colorlib-active");

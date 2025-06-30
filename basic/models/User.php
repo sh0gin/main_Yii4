@@ -34,6 +34,12 @@ class User extends ActiveRecord implements IdentityInterface {
     {
         // return $this->authKey === $authKey;
     }
+
+    public function getUserUseLogin($login) {
+        return static::findOne([
+            'login' => $login,
+        ]);
+    }
 }
 
 
