@@ -4,6 +4,7 @@ namespace app\controllers;
 
 
 use app\models\MyLoginForm;
+use app\models\MyAuthForm;
 use app\models\User;
 use Yii;
 
@@ -23,10 +24,6 @@ class UserController extends AppController
         $model = new MyLoginForm();
         $post = Yii::$app->request->post();
 
-
-
-
-
         $user = User::findOne(['login' => $post['login']]);
         if (!$user) {
             echo json_encode([
@@ -45,7 +42,10 @@ class UserController extends AppController
                 // echo "PASSWORD is succesfull";
                 if (Yii::$app->user->login($model)) {
                     $token = Yii::$app->security->generateRandomString();
-                     echo json_encode([
+                    $user_active = User::findOne(['login' => $model->login]);
+                    $user_active['token'] = $token;
+                    $user_active->save();
+                    echo json_encode([
                     'status' => true,
                     'valid_login' => "",
                     'valid_password' => "",
@@ -110,5 +110,26 @@ class UserController extends AppController
         //     $this->printd($model);
         // }
         // die;
+    }
+
+    public function actionLogout() {
+        $token = Yii::$app->request->post()['token'];
+        $user = User::findOne(['token' => $token]);
+        $user['token'] = NULL;
+        $user->save();
+    }
+
+    public function actionRegister() {
+        $post = Yii::$app->request->post();
+        $user = new MyAuthForm();
+        var_dump($user->load($post, ""));
+        $this->printd($post);
+        $this->printd($user);
+
+        // сделать модель
+        // загрузить даннеы в модель
+        // сделать валидацию
+        // если валидация нашла ошибку вернуть json
+        // иначе загрузить данные в бд и вернуть json
     }
 }

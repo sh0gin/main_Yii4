@@ -32,7 +32,7 @@ function giveInputRegister() {
       });
 
     $.ajax({
-      url: "/work_register.php",
+      url: "./basic/web/user/register",
       method: "POST",
       dataType: "json",
       data: $obj,

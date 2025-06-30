@@ -101,5 +101,13 @@ function giveInputLogin() { // Срабатывает по нажатию кно
 
 
 function logout() { // удаляем токен в localstorage
+  $.ajax({
+      url: "./basic/web/user/logout",
+      method: "POST",
+      dataType: "json",
+      data: {'token' : localStorage.getItem('token')},
+      success: function ($response) {
+  }})
+
   localStorage.removeItem("token");
-} 
+}
