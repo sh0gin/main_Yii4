@@ -4,7 +4,7 @@ namespace app\models;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class MyAuthForm extends ActiveRecord implements IdentityInterface{
+class MyRegisterForm extends ActiveRecord implements IdentityInterface{
 
         public $name;
         public $surname;
@@ -13,6 +13,13 @@ class MyAuthForm extends ActiveRecord implements IdentityInterface{
         public $email;
         public $password;
         public $password_repeat;
+
+    public function rules() {
+        return [
+            [['name', 'surname', "patronymic", 'login', 'email', 'password', 'password_repeat'], 'required'],
+        ];
+    }
+
 
     public static function tableName() {
         return 'user';

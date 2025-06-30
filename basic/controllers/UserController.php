@@ -4,7 +4,7 @@ namespace app\controllers;
 
 
 use app\models\MyLoginForm;
-use app\models\MyAuthForm;
+use app\models\MyRegisterForm;
 use app\models\User;
 use Yii;
 
@@ -37,6 +37,7 @@ class UserController extends AppController
         // status / valid_login / valid_password / login / password / token
         // status / valid_login / valid_passwod / login / password
         $model->load(Yii::$app->request->post(), "");
+
         if ($model->validate()) {
             if (Yii::$app->getSecurity()->validatePassword($post['password'], $user->password)) {
                 // echo "PASSWORD is succesfull";
@@ -120,12 +121,16 @@ class UserController extends AppController
     }
 
     public function actionRegister() {
-        $post = Yii::$app->request->post();
-        $user = new MyAuthForm();
-        var_dump($user->load($post, ""));
-        $this->printd($post);
-        $this->printd($user);
+        $post = Yii::$app->request->post(); 
+        $post = ["MyRegisterForm" => $post];
+        $user = new MyRegisterForm();
 
+        $user->load($post);
+        if ($user->validate()) {
+            $user->save();
+        } else {
+            echo "not valid";
+        }
         // сделать модель
         // загрузить даннеы в модель
         // сделать валидацию
