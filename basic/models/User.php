@@ -1,13 +1,32 @@
 <?php
 
 namespace app\models;
+
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord implements IdentityInterface {
+class User extends ActiveRecord implements IdentityInterface
+{
 
-    public static function tableName() {
+    public $name;
+    public $surname;
+    public $patronymic;
+    public $login;
+    public $email;
+    public $password;
+    public $password_repeat;
+
+
+    public static function tableName()
+    {
         return 'user';
+    }
+
+    public function rules()
+    {
+        return [
+            [['name', 'surname', "patronymic", 'login', 'email', 'password', 'password_repeat'], 'required'],
+        ];
     }
 
     public static function findIdentity($id)
@@ -35,12 +54,10 @@ class User extends ActiveRecord implements IdentityInterface {
         // return $this->authKey === $authKey;
     }
 
-    public function getUserUseLogin($login) {
+    public function getUserUseLogin($login)
+    {
         return static::findOne([
             'login' => $login,
         ]);
     }
 }
-
-
-

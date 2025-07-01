@@ -47,22 +47,22 @@ class UserController extends AppController
                     $user_active['token'] = $token;
                     $user_active->save();
                     echo json_encode([
-                    'status' => true,
-                    'valid_login' => "",
-                    'valid_password' => "",
-                    'login' => $model->login,
-                    "password" => $model->password,
-                    'token' => $token,
-                ]);
+                        'status' => true,
+                        'valid_login' => "",
+                        'valid_password' => "",
+                        'login' => $model->login,
+                        "password" => $model->password,
+                        'token' => $token,
+                    ]);
                 }
             } else {
                 echo json_encode([
-                'status' => false,
-                'valid_login' => "",
-                'valid_password' => "Неверный пароль",
-                'login' => $model->login,
-                "password" => $model->password,
-            ]);
+                    'status' => false,
+                    'valid_login' => "",
+                    'valid_password' => "Неверный пароль",
+                    'login' => $model->login,
+                    "password" => $model->password,
+                ]);
             };
         } else {
             $valid = $model->getErrors();
@@ -113,28 +113,32 @@ class UserController extends AppController
         // die;
     }
 
-    public function actionLogout() {
+    public function actionLogout()
+    {
         $token = Yii::$app->request->post()['token'];
         $user = User::findOne(['token' => $token]);
         $user['token'] = NULL;
         $user->save();
     }
 
-    public function actionRegister() {
-        $post = Yii::$app->request->post(); 
-        $post = ["MyRegisterForm" => $post];
-        $user = new MyRegisterForm();
+    public function actionRegister()
+    {
+        $post = Yii::$app->request->post();
+        // $post = ["MyRegisterForm" => $post];
+        $user = new User();
 
-        $user->load($post);
-        if ($user->validate()) {
+
+        if ($user->load(Yii::$app->request->post(), '') && $user->validate()) {
+            // $this->printd($user);
             $user->save();
-        } else {
-            echo "not valid";
-        }
+            // $user->loadDefaultValues();
+
+
         // сделать модель
         // загрузить даннеы в модель
         // сделать валидацию
         // если валидация нашла ошибку вернуть json
         // иначе загрузить данные в бд и вернуть json
+    }
     }
 }
