@@ -6,6 +6,7 @@ namespace app\controllers;
 use app\models\MyLoginForm;
 use app\models\MyRegisterForm;
 use app\models\User;
+use app\models\User2;
 use Yii;
 
 
@@ -24,37 +25,40 @@ class UserController extends AppController
         $model = new MyLoginForm();
         $post = Yii::$app->request->post();
 
-        $user = User::findOne(['login' => $post['login']]);
-        if (!$user) {
-            echo json_encode([
-                'status' => false,
-                'valid_login' => "Нет такого логина!",
-                'valid_password' => "",
-                'login' => $model->login,
-                "password" => $model->password,
-            ]);
-        }
+
         // status / valid_login / valid_password / login / password / token
         // status / valid_login / valid_passwod / login / password
         $model->load(Yii::$app->request->post(), "");
 
         if ($model->validate()) {
-            if (Yii::$app->getSecurity()->validatePassword($post['password'], $user->password)) {
-                // echo "PASSWORD is succesfull";
-                if (Yii::$app->user->login($model)) {
-                    $token = Yii::$app->security->generateRandomString();
-                    $user_active = User::findOne(['login' => $model->login]);
-                    $user_active['token'] = $token;
-                    $user_active->save();
-                    echo json_encode([
-                        'status' => true,
-                        'valid_login' => "",
-                        'valid_password' => "",
-                        'login' => $model->login,
-                        "password" => $model->password,
-                        'token' => $token,
-                    ]);
-                }
+            $user = User2::findOne(['login' => $post['login']]); // порядок выполнения
+            // if (!$user) {
+            //     echo json_encode([
+            //         'status' => false,
+            //         'valid_login' => "Нет такого логина!",
+            //         'valid_password' => "",
+            //         'login' => $model->login,
+            //         "password" => $model->password,
+            //     ]);
+            // }
+            $this->printd($user); die;
+            if (Yii::$app->security->validatePassword($post['password'], $user->password)) {
+
+                // if (Yii::$app->user->login($model)) {
+                $token = Yii::$app->security->generateRandomString(); // засовывать сразу в низ в переменную
+                // $uer_active = User::findOne(['login' => $model->login]);
+                $user['token'] = $token;
+                // $user>'token'] = $token;
+                $user->save();
+                echo json_encode([
+                    'status' => true,
+                    'valid_login' => "",
+                    'valid_password' => "",
+                    'login' => $model->login,
+                    "password" => $model->password,
+                    'token' => $token,
+                ]);
+                // }
             } else {
                 echo json_encode([
                     'status' => false,
@@ -124,21 +128,20 @@ class UserController extends AppController
     public function actionRegister()
     {
         $post = Yii::$app->request->post();
-        // $post = ["MyRegisterForm" => $post];
-        $user = new User();
+        $user = new User2();
 
 
         if ($user->load(Yii::$app->request->post(), '') && $user->validate()) {
-            // $this->printd($user);
+            // $this->printd($user); die;
             $user->save();
             // $user->loadDefaultValues();
 
 
-        // сделать модель
-        // загрузить даннеы в модель
-        // сделать валидацию
-        // если валидация нашла ошибку вернуть json
-        // иначе загрузить данные в бд и вернуть json
-    }
+            // сделать модель
+            // загрузить даннеы в модель
+            // сделать валидацию
+            // если валидация нашла ошибку вернуть json
+            // иначе загрузить данные в бд и вернуть json
+        }
     }
 }

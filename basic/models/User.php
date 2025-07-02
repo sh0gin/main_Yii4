@@ -8,18 +8,18 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
 
-    public $name;
-    public $surname;
-    public $patronymic;
-    public $login;
-    public $email;
-    public $password;
-    public $password_repeat;
+    public $name = "";
+    public $surname = "";
+    public $patronymic = "";
+    public $login = "";
+    public $email = "";
+    public $password = "" ;
+    public $password_repeat = "";
 
 
     public static function tableName()
     {
-        return 'user';
+        return 'User';
     }
 
     public function rules()
