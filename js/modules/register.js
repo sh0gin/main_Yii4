@@ -30,7 +30,7 @@ function giveInputRegister() {
         // забираем данные из формы в $obj
         $obj[$(el).attr("name")] = $(el).val();
       });
-
+    
     $.ajax({
       url: "./basic/web/user/register",
       method: "POST",

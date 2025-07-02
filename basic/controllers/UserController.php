@@ -15,6 +15,7 @@ class UserController extends AppController
 
     public $enableCsrfValidation = false;
 
+
     public function actionIndex()
     {
         return $this->render('index');
@@ -22,45 +23,27 @@ class UserController extends AppController
 
     public function actionLoad()
     {
-        $model = new MyLoginForm();
+        $model = new User2();
         $post = Yii::$app->request->post();
-
 
         // status / valid_login / valid_password / login / password / token
         // status / valid_login / valid_passwod / login / password
         $model->load(Yii::$app->request->post(), "");
-
         if ($model->validate()) {
             $user = User2::findOne(['login' => $post['login']]); // порядок выполнения
-            // if (!$user) {
-            //     echo json_encode([
-            //         'status' => false,
-            //         'valid_login' => "Нет такого логина!",
-            //         'valid_password' => "",
-            //         'login' => $model->login,
-            //         "password" => $model->password,
-            //     ]);
-            // }
-            $this->printd($user); die;
             if (Yii::$app->security->validatePassword($post['password'], $user->password)) {
-
-                // if (Yii::$app->user->login($model)) {
-                $token = Yii::$app->security->generateRandomString(); // засовывать сразу в низ в переменную
-                // $uer_active = User::findOne(['login' => $model->login]);
-                $user['token'] = $token;
-                // $user>'token'] = $token;
+                $user['token'] = Yii::$app->security->generateRandomString();
                 $user->save();
-                echo json_encode([
+                return $this->asJson([
                     'status' => true,
                     'valid_login' => "",
                     'valid_password' => "",
                     'login' => $model->login,
                     "password" => $model->password,
-                    'token' => $token,
+                    'token' => $user->token,
                 ]);
-                // }
             } else {
-                echo json_encode([
+                return $this->asJson([
                     'status' => false,
                     'valid_login' => "",
                     'valid_password' => "Неверный пароль",
@@ -69,8 +52,9 @@ class UserController extends AppController
                 ]);
             };
         } else {
-            $valid = $model->getErrors();
 
+            $valid = $model->getErrors();
+            // $this->printd($valid);
             if (!array_key_exists("login", $valid)) {
                 $valid['login'] = false;
             } else {
@@ -84,16 +68,96 @@ class UserController extends AppController
             }
 
 
-            echo json_encode([
+            return $this->asJson([
                 'status' => false,
                 'valid_login' => $valid['login'],
                 'valid_password' => $valid['password'],
                 'login' => $model->login,
                 "password" => $model->password,
             ]);
-            // $this->printd($model->getErrors());
         }
-        die;
+    }
+
+    public function actionLogout()
+    {
+        $token = Yii::$app->request->post()['token'];
+        $user = User::findOne(['token' => $token]);
+        $user['token'] = NULL;
+        $user->save();
+    }
+
+    public function actionRegister()
+    {
+        $post = Yii::$app->request->post();
+        $user = new User2();
+        $user->scenario = 'auth';
+        if ($user->load($post, '') && $user->validate()) {
+            // $this->printd($user);
+            $hash = Yii::$app->security->generatePasswordHash($user->password);
+            $user->password = $hash;
+            $user->password_repeat = $hash;
+            if ($user->save()) {
+                return $this->asJson([
+
+                    'status' => false,
+                    'valid_login' => "",
+                    'valid_password' => "",
+                    'valid_password_repeat' => "",
+                    'valid_email' => "",
+                    'valid_patronymic' => "",
+                    'valid_name' => "",
+                    'valid_surname' => "",
+                    'login' => $user->login,
+                    'password' => $user->password,
+                    'password_repeat' => $user->password_repeat,
+                    'email' => $user->email,
+                    'patronymic' => $user->patronymic,
+                    'name' => $user->name,
+                    'surname' => $user->surname,
+                ]);
+            } else {
+                echo 'tundutunt';
+            };
+
+        } else {
+            $valid = $user->getErrors();
+            $name_of_field = array_keys($post); // need to do validate cool
+
+            foreach ($name_of_field as $value) {
+                if (!array_key_exists($value, $valid)) {
+                    $valid[$value] = false;
+                } else {
+                    $valid[$value] = $valid[$value][0];
+                }
+            }
+
+            return $this->asJson([
+
+                'status' => true,
+                'valid_login' => $valid['login'],
+                'valid_password' => $valid['password'],
+                'valid_password_repeat' => $valid['password_repeat'],
+                'valid_email' => $valid['email'],
+                'valid_patronymic' => $valid['patronymic'],
+                'valid_name' => $valid['name'],
+                'valid_surname' => $valid['surname'],
+                'login' => $user->login,
+                'password' => $user->password,
+                'password_repeat' => $user->password_repeat,
+                'email' => $user->email,
+                'patronymic' => $user->patronymic,
+                'name' => $user->name,
+                'surname' => $user->surname,
+
+            ]);
+        }
+    }
+}
+
+
+
+
+
         // $user::validatePassword($post['password']);
 
         // Yii::$app->user->login($user);
@@ -115,33 +179,3 @@ class UserController extends AppController
         //     $this->printd($model);
         // }
         // die;
-    }
-
-    public function actionLogout()
-    {
-        $token = Yii::$app->request->post()['token'];
-        $user = User::findOne(['token' => $token]);
-        $user['token'] = NULL;
-        $user->save();
-    }
-
-    public function actionRegister()
-    {
-        $post = Yii::$app->request->post();
-        $user = new User2();
-
-
-        if ($user->load(Yii::$app->request->post(), '') && $user->validate()) {
-            // $this->printd($user); die;
-            $user->save();
-            // $user->loadDefaultValues();
-
-
-            // сделать модель
-            // загрузить даннеы в модель
-            // сделать валидацию
-            // если валидация нашла ошибку вернуть json
-            // иначе загрузить данные в бд и вернуть json
-        }
-    }
-}

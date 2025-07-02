@@ -14,13 +14,14 @@ use Yii;
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property string $password_repeat
  * @property string|null $token
  * @property int $role
  */
 class User2 extends \yii\db\ActiveRecord
 {
 
-
+    public $password_repeat;
     /**
      * {@inheritdoc}
      */
@@ -35,11 +36,20 @@ class User2 extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['token'], 'default', 'value' => null],
-            [['role'], 'default', 'value' => 0],
-            [['login', 'surname', 'patronymic', 'name', 'email', 'password'], 'required'],
-            [['role'], 'integer'],
-            [['login', 'surname', 'patronymic', 'name', 'email', 'password', 'token'], 'string', 'max' => 255],
+            [['password'], 'required'],
+            [['login'], 'required'],
+
+            [['surname', 'patronymic', 'name', 'email', 'password_repeat'], 'trim', 'on' => ['auth']],
+            [['surname', 'patronymic', 'name', 'email', 'password_repeat'], 'required', 'on' => ['auth']],
+            [['email'], 'email', 'on' => ['auth']],
+            [['login', 'email'], "unique", 'on' => ['auth']],
+            ['password', 'compare', 'on' => ['auth']],
+
+            // [['surname', 'patronymic', 'name', 'email', 'password_repeat'], 'string', 'max' => 255, 'on' => ['auth']],
+
+            // [['token'], 'default', 'value' => null],
+            // [['role'], 'default', 'value' => 0],
+            // [['role'], 'integer'],
         ];
     }
 
@@ -60,5 +70,4 @@ class User2 extends \yii\db\ActiveRecord
             'role' => 'Role',
         ];
     }
-
 }
