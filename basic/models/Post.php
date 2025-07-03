@@ -33,9 +33,9 @@ class Post extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['content', 'title', 'preview', 'token', 'id_token'], 'safe'],
+            [['content', 'title', 'preview', "autor_id"], 'required'],
+            [['image'], 'file', 'on' => 'without-image'],
             // [['autor_id', 'content', 'title', 'preview'], 'required'],
-            [['image'], 'file'],
             // [['autor_id'], 'integer'],
             // [['date'], 'safe'],
             // [['content'], 'string'],
@@ -57,5 +57,15 @@ class Post extends \yii\db\ActiveRecord
             'title' => 'Title',
             'preview' => 'Preview',
         ];
+    }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            $this->image->saveAs(__DIR__ .  '/../../images/' . $this->image->baseName . '.' . $this->image->extension);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

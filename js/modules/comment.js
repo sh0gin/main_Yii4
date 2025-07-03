@@ -12,7 +12,7 @@ function giveInputComment() {
     let $token = localStorage.getItem("token");
 
     $.ajax({
-      url: "/work_post.php",
+      url: "./basic/web/comment/load", // was work_post
       method: "POST",
       dataType: "json",
       data: { message: $message, post_id: $post_id, token: $token },
@@ -88,12 +88,14 @@ function deleteComment() {
     let $id_post = get("id");
 
     $.ajax({
-      url: "/deleteComment.php",
+      url: "/basic/web/comment/delete",
       method: "POST",
       dataType: "json",
       data: { id_comment: $id },
       success: function ($response) {
-        getPost($id_post);
+        if ($response.status) {
+          getPost($id_post);
+        }
       },
     });
   });

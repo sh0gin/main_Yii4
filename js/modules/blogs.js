@@ -136,7 +136,7 @@ function deletePost() { // удаляет пост
 		console.log("POST");
 		let $id_post = $(this).attr("data-id");
 		$.ajax({
-			url: "/delete_post.php",
+			url: "./basic/web/post/delete",
 			method: "POST",
 			dataType: "json",
 			data: { id_post: $id_post },

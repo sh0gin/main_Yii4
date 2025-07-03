@@ -59,7 +59,6 @@ class UserController extends AppController
         } else {
 
             $valid = $model->getErrors();
-            // $this->printd($valid);
             if (!array_key_exists("login", $valid)) {
                 $valid['login'] = false;
             } else {

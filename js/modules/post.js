@@ -20,7 +20,7 @@ function giveInputPost($id = false) { // нужен чтобы взять id п�
         }
 
         $formData.append("id_post", $id_post);
-        console.log($formData);
+
         $.ajax({
             url: "./basic/web/post/load",
             method: 'POST',
@@ -29,10 +29,10 @@ function giveInputPost($id = false) { // нужен чтобы взять id п�
             processData: false,
             data: $formData,
             success: function ($response) {
-                // console.log(Number($response.id));
+                console.log($response);
                 if (!$response.status) {
+                    console.log("123");
                     addBlogsHide();
-                    console.log('GOOO');
                     // getFullPost(); // чтобы выводилась страница постов
                     getPost(Number($response.id));
                     clearPost(); // очищает форму
