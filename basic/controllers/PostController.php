@@ -1,20 +1,27 @@
 <?php
 
 namespace app\controllers;
-use Yii;
-class PostController extends \yii\web\Controller
-{
 
+use app\models\Post;
+use yii\web\UploadedFile;
+use Yii;
+
+
+class PostController extends AppController
+{
     public $enableCsrfValidation = false;
+
 
     public function actionIndex()
     {
         return $this->render('index');
     }
 
-    public function actionLoad() 
+    public function actionLoad()
     {
-        var_dump(Yii::$app->request->post()); die;
+        $model = new Post();
+        var_dump(UploadedFile::getInstance($model, 'image'));
+            // $post = Yii::$app->request;
+        // $this->printd($post);
     }
-
 }

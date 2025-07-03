@@ -20,9 +20,9 @@ function giveInputPost($id = false) { // нужен чтобы взять id п�
         }
 
         $formData.append("id_post", $id_post);
-
+        console.log($formData);
         $.ajax({
-            url: '/work_post-create.php',
+            url: "./basic/web/post/load",
             method: 'POST',
             dataType: "json",
             contentType: false,

@@ -9,7 +9,12 @@ use app\models\User;
 use app\models\User2;
 use Yii;
 
+// создание и редактирование постов
+// комментарий и ответ на комментарий
+// пагинация
+// админка
 
+// функция определения смособностей usera, пока не понимаю как это сделать  
 class UserController extends AppController
 {
 
