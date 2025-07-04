@@ -19,6 +19,8 @@ class Post extends \yii\db\ActiveRecord
 {
 
     public $image;
+    public $user;
+    public $url_image;
     /**
      * {@inheritdoc}
      */

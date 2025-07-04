@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Image;
 use app\models\Post;
 use app\models\User2;
+use app\models\Comment;
 use yii\web\UploadedFile;
 
 use Yii;
@@ -38,6 +39,7 @@ class PostController extends AppController
             $model->id = $post['id_post'];
             $model->isNewRecord = false;
         }
+
         // var_dump($this->isNewRecord);
         // $this->printd($post); die;
 
@@ -95,5 +97,47 @@ class PostController extends AppController
                     'status' => false,
                 ]);
         };
+    }
+
+    public function actionGetPost() {
+
+        $post = Yii::$app->request->post();
+
+        $model_post = new Post();
+        $model_image = new Image();
+        $model_user = new User2();
+        $model_comment = new Comment();
+        $model_post = $model_post->findOne(['id' => $post['id']]);
+        if ($model_image->findOne(['post_id' => $post['id']])) {
+            $model_post->url_image = $model_image->findOne(['post_id' => $post['id']])->image;
+        } else {
+            $model_post->url_image = '';
+        }
+
+        if ($post['token']) {
+            $id = $model_user->findOne(['token' => $post['token']])->id;
+            $role = $model_user->findOne(['token' => $post['token']])->role;
+            return $this->asJson([
+                'post' => $model_post, 
+                'id' => $id,
+                'comment_count' => $model_comment::find()->where(['post_id' => $model_post->id])->count(),
+                'user' => $model_user->findOne($model_post->autor_id),
+                'url_image' => $model_post->url_image,
+                'role' => $role,
+            ]);
+        }
+
+        return $this->asJson([
+                'post' => $model_post, 
+                'user' => $model_user->findOne($model_post->autor_id),
+                'url_image' => $model_post->url_image,
+                'id' => 0,
+                'role' => 0,
+            ]);
+
+    }
+
+    public function actionGetPosts() {
+
     }
 }

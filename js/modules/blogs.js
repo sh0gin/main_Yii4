@@ -9,7 +9,7 @@ export { blogsShow, getHtml, getPost, getFullPost, addPostButton, moreButton, ad
 
 
 function blogsShow() { // отображает страницу блоги
-	
+
 	$(".blogs").removeClass("not-active");
 	$("a[data-section=blogs]").addClass("colorlib-active");
 }
@@ -36,14 +36,14 @@ function getHtml($number) { // берём из getPosts.php массив с па
 
 function getFullPost($number_pagin = 0) { // отображает все посты на странице.
 
-    let $url = `index.html?page=1`;
-    history.pushState({ page: 1 }, "", $url);
+	let $url = `index.html?page=1`;
+	history.pushState({ page: 1 }, "", $url);
 
 	if (!$number_pagin) {
 		$number_pagin = 0;
 	}
 
-    // history.pushState({}, "", $url);
+	// history.pushState({}, "", $url);
 	getHtml($number_pagin);
 	getHtmlPagination($number_pagin);
 	blogsShow();
@@ -61,7 +61,7 @@ function getHtmlTen() {
 		dataType: "json",
 		data: { "token": $token, number_page: 0, limit: 10, ten_post: true },
 		success: function ($response) {
-			// console.log($response);
+			console.log($response);
 			// getPosts - генерирует html код для одного поста в благах или индексе.
 			$response.forEach($value => $(".list-10-posts").append(getPosts($value)));
 		},
@@ -90,7 +90,7 @@ function moreButton() { // по клику на кнопку "Подробнее
 function getPost($id = null) { // отображает страницу ПРОСМОТРА поста 
 	hideAll();
 	let $token = localStorage.getItem("token");
-	
+
 	if ($id === null) {
 		var $id = get("id");
 	}
@@ -98,15 +98,16 @@ function getPost($id = null) { // отображает страницу ПРОС
 	if ($id) {
 		$(".post-content").html("");
 		$.ajax({
-			url: "/getPost.php",
+			url: "./basic/web/post/get-post",
 			method: "POST",
 			dataType: "json",
-			data: { id : $id, token: $token },
+			data: { id: $id, token: $token },
 			success: function ($response) {
+
 				$(".post").removeClass("not-active");
 				$(".post-content").html(getPostOne($response));
-				getComments($response[0].id);
-				
+				getComments($response.post.id);
+
 			},
 		});
 		// $(`ul[data-com=${$id_post}]`).html("");
