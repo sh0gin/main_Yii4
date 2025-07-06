@@ -10,6 +10,7 @@ use yii\data\Pagination;
 use yii\web\UploadedFile;
 
 use Yii;
+use yii\data\Sort;
 use yii\web\Response;
 
 class PostController extends AppController
@@ -139,6 +140,8 @@ class PostController extends AppController
 
     public function actionGetPosts()
     {
+      
+
         $post = Yii::$app->request->post();
         $model_user = new User2();
 
@@ -178,4 +181,3 @@ class PostController extends AppController
 
 
 }
-// Егор - лучший программист

@@ -36,7 +36,7 @@ class Post extends \yii\db\ActiveRecord
     {
         return [
             [['content', 'title', 'preview', "autor_id"], 'required'],
-            [['image'], 'file', 'on' => 'without-image'],
+            [['image'], 'file'],
             // [['autor_id', 'content', 'title', 'preview'], 'required'],
             // [['autor_id'], 'integer'],
             // [['date'], 'safe'],
