@@ -34,7 +34,7 @@ function permanent() {
     let $id_user = $(this).attr("data-user-id");
 
     $.ajax({
-      url: "/permanent.php",
+      url: "./baic/web/user/permanent",
       method: "POST",
       dataType: "json",
       data: { id_user: $id_user },

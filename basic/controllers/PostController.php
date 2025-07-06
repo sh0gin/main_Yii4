@@ -6,10 +6,10 @@ use app\models\Image;
 use app\models\Post;
 use app\models\User2;
 use app\models\Comment;
+use yii\data\Pagination;
 use yii\web\UploadedFile;
 
 use Yii;
-
 use yii\web\Response;
 
 class PostController extends AppController
@@ -90,16 +90,17 @@ class PostController extends AppController
         $model = Post::findOne($post['id_post']);
         if ($model->delete()) {
             return $this->asJson([
-                    'status' => true,
-                ]);
+                'status' => true,
+            ]);
         } else {
             return $this->asJson([
-                    'status' => false,
-                ]);
+                'status' => false,
+            ]);
         };
     }
 
-    public function actionGetPost() {
+    public function actionGetPost()
+    {
 
         $post = Yii::$app->request->post();
 
@@ -118,7 +119,7 @@ class PostController extends AppController
             $id = $model_user->findOne(['token' => $post['token']])->id;
             $role = $model_user->findOne(['token' => $post['token']])->role;
             return $this->asJson([
-                'post' => $model_post, 
+                'post' => $model_post,
                 'id' => $id,
                 'comment_count' => $model_comment::find()->where(['post_id' => $model_post->id])->count(),
                 'user' => $model_user->findOne($model_post->autor_id),
@@ -128,16 +129,53 @@ class PostController extends AppController
         }
 
         return $this->asJson([
-                'post' => $model_post, 
-                'user' => $model_user->findOne($model_post->autor_id),
-                'url_image' => $model_post->url_image,
-                'id' => 0,
-                'role' => 0,
-            ]);
-
+            'post' => $model_post,
+            'user' => $model_user->findOne($model_post->autor_id),
+            'url_image' => $model_post->url_image,
+            'id' => 0,
+            'role' => 0,
+        ]);
     }
 
-    public function actionGetPosts() {
+    public function actionGetPosts()
+    {
+        $post = Yii::$app->request->post();
+        $model_user = new User2();
 
+        $query = Post::find();
+        $countQuery = clone $query;
+
+        if ($post['ten_post']) {
+            $default = 10;
+        } else {
+            $default = 20;
+        }
+
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'defaultPageSize' => $default]);
+        // $this->printd($pages); die;// ['totalCount' => $countQuery->count()]
+        $models = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+
+        $result = [];
+        $id = 0;
+        $role = 0;
+        if ($post['token']) {
+            $id = $model_user->findOne(['token' => $post['token']])->id;
+            $role = $model_user->findOne(['token' => $post['token']])->id;
+        }
+
+        foreach ($models as $model) {
+            $user = $model_user->findOne($model->autor_id);
+            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role];
+        }
+
+        return $this->asJson([
+            'models' => ['result' => $result],
+            'pages' => $pages,
+        ]);
     }
+
+
 }
+// Егор - лучший программист

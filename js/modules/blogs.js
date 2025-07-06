@@ -22,14 +22,15 @@ function getHtml($number) { // берём из getPosts.php массив с па
 
 	let $token = localStorage.getItem("token");
 	$.ajax({
-		url: "/getPosts.php",
+		url: "./basic/web/post/get-posts",
 		method: "POST",
 		dataType: "json",
 		data: { "token": $token, number_page: $number, limit: 5, ten_post: false },
 		success: function ($response) {
+			// console.log($response.models.result);
 			// console.log($response);
 			// getPosts - генерирует html код для одного поста в благах или индексе.
-			$response.forEach($value => $(".list-posts").append(getPosts($value)));
+			$response.models.result.forEach($value => $(".list-posts").append(getPosts($value)));
 		},
 	});
 }
@@ -56,14 +57,13 @@ function getHtmlTen() {
 	$(".list-10-posts").html("");
 	let $token = localStorage.getItem("token");
 	$.ajax({
-		url: "/getPosts.php",
+		url: "./basic/web/post/get-posts",
 		method: "POST",
 		dataType: "json",
 		data: { "token": $token, number_page: 0, limit: 10, ten_post: true },
 		success: function ($response) {
-			console.log($response);
 			// getPosts - генерирует html код для одного поста в благах или индексе.
-			$response.forEach($value => $(".list-10-posts").append(getPosts($value)));
+			$response.models.result.forEach($value => $(".list-10-posts").append(getPosts($value)));
 		},
 	});
 }
@@ -85,7 +85,6 @@ function moreButton() { // по клику на кнопку "Подробнее
 		getPost();
 	})
 }
-
 
 function getPost($id = null) { // отображает страницу ПРОСМОТРА поста 
 	hideAll();

@@ -156,6 +156,10 @@ class UserController extends AppController
             ]);
         }
     }
+
+    public function permanent() {
+        var_dump(Yii::$app->request->post());
+    }
 }
 
 
