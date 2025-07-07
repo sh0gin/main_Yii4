@@ -6,7 +6,7 @@ use app\models\Image;
 use app\models\Post;
 use app\models\User2;
 use app\models\Comment;
-use yii\data\Pagination;
+use yii\data\ActiveDataProvider;
 use yii\web\UploadedFile;
 
 use Yii;
@@ -44,9 +44,12 @@ class PostController extends AppController
         // var_dump($this->isNewRecord);
         // $this->printd($post); die;
 
+        if (UploadedFile::getInstanceByName('image')) {
+            $model->image = UploadedFile::getInstanceByName('image');
+        }
+
         if ($model->load($post, '') && $model->save()) {
-            if (UploadedFile::getInstanceByName('image')) {
-                $model->image = UploadedFile::getInstanceByName('image');
+            if ($model->image) {
                 $model->upload();
                 $image = new Image();
                 $image->load(['image' => "images/{$model->image->fullPath}", 'post_id' => $model->id], '');
@@ -64,7 +67,9 @@ class PostController extends AppController
 
             $valid = $model->getErrors();
             $name_of_field = array_keys($post); // need to do validate cool
+            $name_of_field[] = "image";
 
+            // $this->printd($name_of_field); die;
             foreach ($name_of_field as $value) {
                 if (!array_key_exists($value, $valid)) {
                     $valid[$value] = false;
@@ -78,6 +83,7 @@ class PostController extends AppController
                 'valid_title' => $valid['title'],
                 'valid_content' => $valid['content'],
                 'valid_preview' => $valid['preview'],
+                'valid_image' => $valid['image'],
                 'title' => $model->title,
                 'content' => $model->content,
                 'preview' => $model->preview,
@@ -140,25 +146,20 @@ class PostController extends AppController
 
     public function actionGetPosts()
     {
-      
 
         $post = Yii::$app->request->post();
         $model_user = new User2();
-
         $query = Post::find();
-        $countQuery = clone $query;
 
-        if ($post['ten_post']) {
-            $default = 10;
-        } else {
-            $default = 20;
-        }
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 11,
+            ],
+            'sort' => ['defaultOrder' => ['date' => SORT_DESC]],
+        ]);
 
-        $pages = new Pagination(['totalCount' => $countQuery->count(), 'defaultPageSize' => $default]);
-        // $this->printd($pages); die;// ['totalCount' => $countQuery->count()]
-        $models = $query->offset($pages->offset)
-            ->limit($pages->limit)
-            ->all();
+        $models = $provider->getModels();
 
         $result = [];
         $id = 0;
@@ -174,10 +175,42 @@ class PostController extends AppController
         }
 
         return $this->asJson([
-            'models' => ['result' => $result],
-            'pages' => $pages,
+            'models' => $result,
         ]);
     }
 
+    public function actionGetTenPosts()
+    {
 
+        $post = Yii::$app->request->post();
+        $model_user = new User2();
+        $query = Post::find();
+        // $count = $query->getcount();
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                // 'totalCount' => $count,
+                'pageSize' => 10,
+            ],
+            'sort' => ['defaultOrder' => ['date' => SORT_DESC]],
+        ]);
+        $models = $provider->getModels();
+
+        $result = [];
+        $id = 0;
+        $role = 0;
+        if ($post['token']) {
+            $id = $model_user->findOne(['token' => $post['token']])->id;
+            $role = $model_user->findOne(['token' => $post['token']])->id;
+        }
+
+        foreach ($models as $model) {
+            $user = $model_user->findOne($model->autor_id);
+            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role];
+        }
+
+        return $this->asJson([
+            'models' => $result,
+        ]);
+    }
 }

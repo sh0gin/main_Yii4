@@ -31,7 +31,6 @@ function giveInputPost($id = false) { // нужен чтобы взять id п�
             success: function ($response) {
                 console.log($response);
                 if (!$response.status) {
-                    console.log("123");
                     addBlogsHide();
                     // getFullPost(); // чтобы выводилась страница постов
                     getPost(Number($response.id));

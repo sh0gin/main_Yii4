@@ -145,8 +145,8 @@
                 </div>
             </section>
 
-             <!-- post-action -->
-             <section class="contact-section px-md-2 pt-5 not-active answer-section">
+            <!-- post-action -->
+            <section class="contact-section px-md-2 pt-5 not-active answer-section">
                 <div class="container">
                     <div class="row d-flex contact-info">
                         <div class="col-md-12 mb-1">
@@ -159,12 +159,14 @@
                                 enctype="multipart/form-data">
 
                                 <div class="form-group">
-                                    <textarea name="message-answer" id="content-message" cols="30" rows="10" class="form-control answer-form-val"></textarea>
+                                    <textarea name="message-answer" id="content-message" cols="30" rows="10"
+                                        class="form-control answer-form-val"></textarea>
                                     <div class="invalid-feedback content-message-answer"></div>
                                 </div>
 
                                 <div class="form-group">
-                                    <button class="btn btn-primary py-3 px-5 creat-post-btn answer-button">Опубликовать</button>
+                                    <button
+                                        class="btn btn-primary py-3 px-5 creat-post-btn answer-button">Опубликовать</button>
                                 </div>
 
                             </form>
@@ -173,7 +175,7 @@
                 </div>
             </section>
 
-		
+
 
             <!-- account -->
             <section class="ftco-no-pt ftco-no-pb not-active account">
@@ -304,36 +306,36 @@
                     </div>
                 </div>
             </section>
-            
+
             <section class="contact-section-block px-md-2 not-active pt-5">
-				<div class="container">
-					<div class="row d-flex contact-info">
-						<div class="col-md-12 mb-1">
-							<h2 class="h3">Временная блокировка пользователя</h2>
-							<div class="id-user-block">
-								Пользователь: 
-							</div>
-						</div>
-					</div>
-					<div class="row block-9">
-						<div class="col-lg-6 d-flex">
-							<form action="">
-								<div class="form-group">
-									<label for="date-block">Дата временной блокировки</label>
-									<input type="date" class="form-control" id="date-block" name="date_block" value=""
-										required>
-                                        <div class="invalid-feedback message-message"></div>
-								</div>
-								<div class="form-group">
+                <div class="container">
+                    <div class="row d-flex contact-info">
+                        <div class="col-md-12 mb-1">
+                            <h2 class="h3">Временная блокировка пользователя</h2>
+                            <div class="id-user-block">
+                                Пользователь:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row block-9">
+                        <div class="col-lg-6 d-flex">
+                            <form action="">
+                                <div class="form-group">
+                                    <label for="date-block">Дата временной блокировки</label>
+                                    <input type="date" class="form-control" id="date-block" name="date_block" value=""
+                                        required>
+                                    <div class="invalid-feedback message-message"></div>
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary py-3 px-5 button-block">
                                         Блокировать
                                     </button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</section>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
 
             <!-- about -->
@@ -510,13 +512,14 @@
                                     <div class="invalid-feedback content-message"></div>
                                 </div>
 
-                                <div class="form-group past_image_post not-active">
-                                    <img src="" class="img-fluid past_image_post" />
-                                </div>
+                                <!-- <div class="form-group past_image_post not-active">
+                                    <img src=""  class="img-fluid past_image_post" />
+                                    <div class="invalid-feedback image-message"></div>
+
+                                </div> -->
 
                                 <div class="form-group">
-                                    <input name="image" type="file" id="input_file_post"
-                                        class="field field__file form-control input_file image">
+                                    <input name="image" id="image" type="file" class="field field__file form-control input_file image ">
 
                                     <div class="invalid-feedback image-message"></div>
                                     <!-- <label class="field__file-wrapper" for="input_file_post">
