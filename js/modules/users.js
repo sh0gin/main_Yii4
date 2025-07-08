@@ -34,10 +34,10 @@ function permanent() {
     let $id_user = $(this).attr("data-user-id");
 
     $.ajax({
-      url: "./baic/web/user/permanent",
+      url: "./basic/web/user/permanent",
       method: "POST",
       dataType: "json",
-      data: { id_user: $id_user },
+      data: { 'user_id' : $id_user },
       success: function () { },
     });
     usersShow();
@@ -50,7 +50,7 @@ function banTimeShow() {
     $(".contact-section-block").removeClass("not-active");
     let $id_user = $(this).attr("data-user-id");
 
-    let $url = `http://localhost/index.html?id_user=${$id_user}`;
+    let $url = `index.html?id_user=${$id_user}`;
 
     history.pushState({ id_user: $id_user }, "", $url);
     $(".id-user-block").text(`Пользователь: ${$id_user}`);
@@ -66,10 +66,10 @@ function banTimeButton() {
     let $date = $("input[id=date-block]").val();
 
     $.ajax({
-      url: "/blockForDate.php",
+      url: "./basic/web/user/block-for-date",
       method: "POST",
       dataType: "json",
-      data: { id_user: $user_id, date: $date },
+      data: { 'user_id' : $user_id, 'date_end' : $date },
       success: function ($response) {
         if ($response.status) {
           hideAll();

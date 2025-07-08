@@ -22,6 +22,8 @@ class User2 extends \yii\db\ActiveRecord
 {
 
     public $password_repeat;
+    public $__user_ban = false;
+    
     /**
      * {@inheritdoc}
      */

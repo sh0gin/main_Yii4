@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
-
+use app\models\Block;
 use app\models\MyLoginForm;
 use app\models\MyRegisterForm;
+use yii\i18n\Formatter;
+
 use app\models\User;
 use app\models\User2;
 use Yii;
@@ -34,11 +36,42 @@ class UserController extends AppController
         // status / valid_login / valid_password / login / password / token
         // status / valid_login / valid_passwod / login / password
         $model->load(Yii::$app->request->post(), "");
+
         if ($model->validate()) {
             $user = User2::findOne(['login' => $post['login']]); // порядок выполнения
             if (Yii::$app->security->validatePassword($post['password'], $user->password)) {
-                $user['token'] = Yii::$app->security->generateRandomString();
+                $model_block = new Block();
+                $model_block = $model_block->findOne(['user_id' => $user->id]);
+
+                if ($model_block) {
+                    $model_formatter = new  Formatter();
+                    $date = $model_formatter->asDate($model_block->date_end, 'd.m Y H:i:s'); 
+                    var_dump($date);
+                    die;
+
+                    if ($model_block->date_end != null) {
+                        $end_block = new Datetime($model_block->date_end);
+                    } else {
+                        $this->__user_ban = "никогда";
+                    }
+
+                }
+
+                if (isset($end_block)) {
+                    $current_time = new Datetime();
+                    $current_time = $current_time->format("U");
+                    $end = $end_block->format("U");
+                    if ($end - $current_time > 0) {
+                        $this->__user_ban = Asists::format_date($end_block);
+                    }
+                }
+
+
+
+
                 $user->save();
+                die;
+                $user['token'] = Yii::$app->security->generateRandomString();
                 return $this->asJson([
                     'status' => true,
                     'valid_login' => "",
@@ -122,7 +155,6 @@ class UserController extends AppController
             } else {
                 echo 'tundutunt';
             };
-
         } else {
             $valid = $user->getErrors();
             $name_of_field = array_keys($post); // need to do validate cool
@@ -157,8 +189,43 @@ class UserController extends AppController
         }
     }
 
-    public function permanent() {
-        var_dump(Yii::$app->request->post());
+    public function actionPermanent()
+    {
+        $post = Yii::$app->request->post();
+        $model_user = User::findOne($post['user_id']);
+        $model_block = new Block();
+        if (!$model_user->role) {
+            if ($model_block->load($post, '') && $model_block->save()) {
+            }
+        }
+    }
+
+    public function actionBlockForDate()
+    {
+        $post = Yii::$app->request->post();
+        $model_user = User::findOne($post['user_id']);
+        $model_block = new Block();
+        $model_block->scenario = 'date';
+        if (!$model_user->role) {
+            if ($model_block->load($post, '') && $model_block->save()) {
+                return $this->asJson([
+                    'status' => true,
+                ]);
+            } else {
+                $valid = $model_block->getErrors();
+                return $this->asJson([
+                    'status' => false,
+                    'message' => array_key_exists('date_end', $valid) ? $valid['date_end'] : "",
+                ]);
+            }
+        }
+        // $model_user = User::findOne($post['user_id']);
+        // $model_block = new Block();
+        // if (!$model_user->role){
+        //     if ($model_block->load($post, '') && $model_block->save()) {
+        //         $this->printd($model_block->user_id);
+        //     }
+        // }
     }
 }
 
@@ -180,7 +247,7 @@ class UserController extends AppController
         //Yii::$app->user->login($user);
         // $model->load(['MyLogin' => Yii::$app->request->post()], "MyLogin");
         // // $this->printd($model);
-        // $model->login();
+        // model->login();
         // $this->printd($model); die;
         // if ($model->load(Yii::$app->request->post())) {
         //     $this->printd(Yii::$app->request->post());
