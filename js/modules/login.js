@@ -15,7 +15,7 @@ function getUserStatus() { // Проверяет статус пользоват
   let $token = localStorage.getItem("token");
   if ($token) {
     $.ajax({
-      url: "/getUser.php",
+      url: "./basic/web/user/get-user-status",
       method: "POST",
       dataType: "json",
       data: { token: $token },

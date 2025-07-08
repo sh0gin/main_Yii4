@@ -149,10 +149,10 @@ class PostController extends AppController
 
         $post = Yii::$app->request->post();
         $model_user = new User2();
-        $query = Post::find();
+
 
         $provider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => Post::find(),
             'pagination' => [
                 'pageSize' => 11,
             ],
@@ -171,7 +171,7 @@ class PostController extends AppController
 
         foreach ($models as $model) {
             $user = $model_user->findOne($model->autor_id);
-            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role];
+            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role,  'comments' => Comment::find()->where(['post_id' => $model->id])->count()];
         }
 
         return $this->asJson([
@@ -195,7 +195,7 @@ class PostController extends AppController
             'sort' => ['defaultOrder' => ['date' => SORT_DESC]],
         ]);
         $models = $provider->getModels();
-
+        
         $result = [];
         $id = 0;
         $role = 0;
@@ -203,14 +203,20 @@ class PostController extends AppController
             $id = $model_user->findOne(['token' => $post['token']])->id;
             $role = $model_user->findOne(['token' => $post['token']])->id;
         }
-
         foreach ($models as $model) {
-            $user = $model_user->findOne($model->autor_id);
-            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role];
+            $user = $model_user->findOne($model->autor_id); 
+            $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role, 'comments' => Comment::find()->where(['post_id' => $model->id])->count()];
         }
 
         return $this->asJson([
             'models' => $result,
+        ]);
+    }
+
+    public function actionEdit() {
+        $post = Yii::$app->request->post();
+        return $this->asJson([
+            'model_post' => Post::findOne($post['id']),
         ]);
     }
 }

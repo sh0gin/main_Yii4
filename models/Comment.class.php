@@ -114,6 +114,7 @@ class Comment
 
             $index = array_shift(array_filter(array_map(fn($elem, $key) =>
             $elem->id == $value->comment_id ? $key : "", $result, array_keys($result)), fn($elem) => is_int($elem))); // индекс элемента к которому принадлежит комментарий
+            
             $result = array_merge(array_slice($result, 0, $index + 1), [$value], array_slice($result, $index + 1));
         }
 

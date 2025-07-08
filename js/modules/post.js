@@ -68,14 +68,14 @@ function edit() {
         let $token = localStorage.getItem("token");
 
         $.ajax({
-            url: "/getPost.php",
+            url: "./basic/web/post/edit",
             method: "POST",
             dataType: "json",
             data: { id: $id_post, token: $token },
             success: function ($response) {
-                $('input[id=title]').val($response[0].title);
-                $('input[id=preview]').val($response[0].preview);
-                $('textarea[id=content]').val($response[0].content);
+                $('input[id=title]').val($response.model_post.title);
+                $('input[id=preview]').val($response.model_post.preview);
+                $('textarea[id=content]').val($response.model_post.content);
             }
         })
         // localStorage.setItem("id", $id_post);

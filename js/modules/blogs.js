@@ -25,7 +25,7 @@ function getHtml($number) { // берём из getPosts.php массив с па
 		url: "./basic/web/post/get-posts",
 		method: "POST",
 		dataType: "json",
-		data: { "token": $token, number_page: $number, limit: 5, ten_post: false },
+		data: { "token": $token, number_page: $number},
 		success: function ($response) {
 			// console.log($response.models.result);
 			// console.log($response);
@@ -60,7 +60,7 @@ function getHtmlTen() {
 		url: "./basic/web/post/get-ten-posts",
 		method: "POST",
 		dataType: "json",
-		data: { "token": $token, number_page: 0, limit: 10, ten_post: true },
+		data: { "token": $token, number_page: 0},
 		success: function ($response) {
 			// getPosts - генерирует html код для одного поста в благах или индексе.
 			$response.models.forEach($value => $(".list-10-posts").append(getPosts($value)));
@@ -119,12 +119,12 @@ function getComments($id_post) {
 	// $(`ul[data-com=${$id_post}]`).replaceWith("");
 
 	$.ajax({
-		url: "/getComments.php",
+		url: "./basic/web/comment/get-comments",
 		method: "POST",
 		dataType: "json",
 		data: { id_post: $id_post, token: $token },
 		success: function ($response) {
-			$response[0].forEach($value => $(`ul[data-com=${$id_post}]`).append(getCommentOne($value, $response[1], $response[2])));
+			$response.model.forEach($value => $(`ul[data-com=${$id_post}]`).append(getCommentOne($value, $response.id, $response.role)));
 		},
 	});
 }

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Block;
 use app\models\MyLoginForm;
 use app\models\MyRegisterForm;
+use yii\data\ActiveDataProvider;
 use yii\i18n\Formatter;
 use app\models\User;
 use app\models\User2;
@@ -57,6 +58,7 @@ class UserController extends AppController
                             $model->__user_ban = $model_block->date_end;
                         }
                     }
+
                     if ($model->__user_ban) {
                         return $this->asJson([
                             'status' => false,
@@ -120,7 +122,7 @@ class UserController extends AppController
     public function actionLogout()
     {
         $token = Yii::$app->request->post()['token'];
-        $user = User::findOne(['token' => $token]);
+        $user = User2::findOne(['token' => $token]);
         $user['token'] = NULL;
         $user->save();
     }
@@ -194,7 +196,7 @@ class UserController extends AppController
     public function actionPermanent()
     {
         $post = Yii::$app->request->post();
-        $model_user = User::findOne($post['user_id']);
+        $model_user = User2::findOne($post['user_id']);
         $model_block = new Block();
         if (!$model_user->role) {
             if ($model_block->load($post, '') && $model_block->save()) {
@@ -205,7 +207,7 @@ class UserController extends AppController
     public function actionBlockForDate()
     {
         $post = Yii::$app->request->post();
-        $model_user = User::findOne($post['user_id']);
+        $model_user = User2::findOne($post['user_id']);
         $model_block = new Block();
         $model_block->scenario = 'date';
         if (!$model_user->role) {
@@ -228,6 +230,59 @@ class UserController extends AppController
         //         $this->printd($model_block->user_id);
         //     }
         // }
+    }
+
+    public function actionGetUserStatus()
+    {
+        $post = Yii::$app->request->post();
+        $model_user = User2::findOne(['token' => $post['token']]);
+
+        return $this->asJson([
+            'isAdmin' => $model_user->role ? true : false,
+            'isGuest' => $model_user->token ? false : true,
+            'login' => $model_user->login,
+            'token' => $model_user->token,
+        ]);
+    }
+
+    public function actionGetUser()
+    {
+        $provider = new ActiveDataProvider([
+            'query' => User2::find(),
+
+        ]);
+
+        $models = $provider->getModels();
+        // $result = [];
+        foreach ($models as $model) {
+
+
+            $model_block = new Block();
+            $model_block = $model_block->find()->where(['user_id' => $model->id])->orderBy(['id' => SORT_DESC])->one();
+            if ($model_block) {
+                $model_formatter = new  Formatter();
+                if ($model_block->date_end != null) {
+                    $end_block = (int) $model_formatter->asTimestamp($model_block->date_end);
+                } else {
+                    $result[] = ['model' => $model, 'dateEnd' => "никогда"];
+                }
+
+                if (isset($end_block)) {
+                    $current_time = (int) Yii::$app->formatter->asTimestamp('now');
+                    if ($end_block - $current_time > 0) {
+                        $result[] = ['model' => $model, 'dateEnd' => $model_block->date_end];
+                    } else {
+                        $result[] = ['model' => $model, 'dateEnd' => false];
+                    }
+                }
+            } else {
+                $result[] = ['model' => $model,  'dateEnd' => false];
+            }
+        }
+
+        return $this->asJson([
+            $result,
+        ]);
     }
 }
 

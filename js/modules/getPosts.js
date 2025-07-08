@@ -14,7 +14,7 @@ function getPosts($onePostObject) { // HTML код для КАЖДОГО ото�
 									<!-- <img src='avatar.jpg' /> -->
 									<span class="text text-3">${$onePostObject.user.login}</span>
 									<span><i class="icon-calendar mr-2"></i>${$onePostObject.model.date}</span>
-									<span><i class="icon-comment2 mr-2"></i>${$onePostObject.model.comments ?? "0"} Comment</span>
+									<span><i class="icon-comment2 mr-2"></i>${$onePostObject.comments ?? "0"} Comment</span>
 								</p>
 							</div>
 							<p class="mb-4">${$onePostObject.model.preview}</p>

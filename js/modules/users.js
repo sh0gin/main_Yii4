@@ -14,13 +14,15 @@ function usersShow() {
 
 function getUsers() {
   $.ajax({
-    url: "/getUsers.php",
+    url: "./basic/web/user/get-user",
     method: "POST",
     dataType: "json",
     // data: { },
     success: function ($response) {
       let number = 1;
-      $response.forEach(($value) => {
+      // console.log($response);
+
+      $response[0].forEach(($value) => {
         $(".t-body").append(getUser($value, number));
         number++;
       });
@@ -37,7 +39,7 @@ function permanent() {
       url: "./basic/web/user/permanent",
       method: "POST",
       dataType: "json",
-      data: { 'user_id' : $id_user },
+      data: { 'user_id': $id_user },
       success: function () { },
     });
     usersShow();
@@ -69,7 +71,7 @@ function banTimeButton() {
       url: "./basic/web/user/block-for-date",
       method: "POST",
       dataType: "json",
-      data: { 'user_id' : $user_id, 'date_end' : $date },
+      data: { 'user_id': $user_id, 'date_end': $date },
       success: function ($response) {
         if ($response.status) {
           hideAll();
