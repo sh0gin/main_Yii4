@@ -150,9 +150,9 @@ class PostController extends AppController
         $post = Yii::$app->request->post();
         $model_user = new User2();
 
-
+        $query = Post::find();
         $provider = new ActiveDataProvider([
-            'query' => Post::find(),
+            'query' =>$query->offset(10),
             'pagination' => [
                 'pageSize' => 11,
             ],
@@ -160,7 +160,7 @@ class PostController extends AppController
         ]);
 
         $models = $provider->getModels();
-
+        // $this->printd($models); die;
         $result = [];
         $id = 0;
         $role = 0;
