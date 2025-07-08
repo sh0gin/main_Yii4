@@ -6,7 +6,6 @@ use app\models\Block;
 use app\models\MyLoginForm;
 use app\models\MyRegisterForm;
 use yii\i18n\Formatter;
-
 use app\models\User;
 use app\models\User2;
 use Yii;
@@ -40,38 +39,40 @@ class UserController extends AppController
         if ($model->validate()) {
             $user = User2::findOne(['login' => $post['login']]); // порядок выполнения
             if (Yii::$app->security->validatePassword($post['password'], $user->password)) {
-                $model_block = new Block();
-                $model_block = $model_block->findOne(['user_id' => $user->id]);
 
+                // ----
+
+                $model_block = new Block();
+                $model_block = $model_block->find()->where(['user_id' => $user->id])->orderBy(['id' => SORT_DESC])->one();
                 if ($model_block) {
                     $model_formatter = new  Formatter();
-                    $date = $model_formatter->asDate($model_block->date_end, 'd.m Y H:i:s'); 
-                    var_dump($date);
-                    die;
-
                     if ($model_block->date_end != null) {
-                        $end_block = new Datetime($model_block->date_end);
+                        $end_block = (int) $model_formatter->asTimestamp($model_block->date_end);
                     } else {
-                        $this->__user_ban = "никогда";
+                        $model->__user_ban = "никогда";
                     }
-
+                    if (isset($end_block)) {
+                        $current_time = (int) Yii::$app->formatter->asTimestamp('now');
+                        if ($end_block - $current_time > 0) {
+                            $model->__user_ban = $model_block->date_end;
+                        }
+                    }
+                    if ($model->__user_ban) {
+                        return $this->asJson([
+                            'status' => false,
+                            'valid_login' => "Пользователь заблокирован. Дата разблокировки: {$model->__user_ban}",
+                            'valid_password' => "",
+                            'login' => $model->login,
+                            "password" => $model->password,
+                            'token' => $user->token,
+                        ]);
+                    }
                 }
 
-                if (isset($end_block)) {
-                    $current_time = new Datetime();
-                    $current_time = $current_time->format("U");
-                    $end = $end_block->format("U");
-                    if ($end - $current_time > 0) {
-                        $this->__user_ban = Asists::format_date($end_block);
-                    }
-                }
+                // ----
 
-
-
-
-                $user->save();
-                die;
                 $user['token'] = Yii::$app->security->generateRandomString();
+                $user->save();
                 return $this->asJson([
                     'status' => true,
                     'valid_login' => "",
@@ -114,6 +115,7 @@ class UserController extends AppController
             ]);
         }
     }
+
 
     public function actionLogout()
     {

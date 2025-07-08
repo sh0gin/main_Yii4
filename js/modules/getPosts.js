@@ -1,7 +1,6 @@
 export { getPosts };
 
 function getPosts($onePostObject) { // HTML код для КАЖДОГО отображение поста на странице БЛОГИ и ГЛАВНАЯ
-	console.log($onePostObject);
 	if ($onePostObject.role === "0") {
 		$onePostObject.role = false;
 	}

@@ -22,7 +22,6 @@ use Yii;
 class Comment extends \yii\db\ActiveRecord
 {
 
-
     /**
      * {@inheritdoc}
      */
@@ -39,6 +38,8 @@ class Comment extends \yii\db\ActiveRecord
         return [
             // [['comment_id'], 'default', 'value' => null],
             [['autor_id', 'post_id', 'message'], 'required'],
+            [['comment_id'], 'required', 'on'=> 'answer'],
+
             // [['autor_id', 'post_id', 'comment_id'], 'integer'],
             // [['message'], 'string'],
             // [['date'], 'safe'],

@@ -59,7 +59,7 @@ function answerButton() {
     let $id_post = get("id");
 
     $.ajax({
-      url: "/work_post.php",
+      url: "./basic/web/comment/load-answer",
       method: "POST",
       dataType: "json",
       data: {
@@ -74,6 +74,8 @@ function answerButton() {
           $("textarea[name='message-answer']").addClass("is-invalid");
           $(".content-message-answer").text($response.valid_message);
         } else {
+          let $url = `${location.protocol}//${location.host}${location.pathname}?id=${$id_post}#`;;
+          history.pushState({}, "", $url);
           $("textarea[name='message-answer']").removeClass("is-invalid");
           getPost($id_post);
         }

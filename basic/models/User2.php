@@ -47,6 +47,8 @@ class User2 extends \yii\db\ActiveRecord
             [['login', 'email'], "unique", 'on' => ['auth']],
             ['password', 'compare', 'on' => ['auth']],
 
+            ['__user_ban', 'safe'],
+
             // [['surname', 'patronymic', 'name', 'email', 'password_repeat'], 'string', 'max' => 255, 'on' => ['auth']],
 
             // [['token'], 'default', 'value' => null],

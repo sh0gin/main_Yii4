@@ -48,20 +48,55 @@ class CommentController extends  AppController
             ]);
         }
     }
+
+    public function actionLoadAnswer()
+    {
+        $post = Yii::$app->request->post();
+        // $this->printd($post); 
+        $model = new Comment();
+        $post['autor_id'] = User::findOne(['token' => $post['token']])->id;
+        unset($post['token']);
+        
+        // $this->printd($post); die;
+        $model->scenario='answer';
+        if ($model->load($post, '') && $model->save()) {
+            // $this->printd($model); die;
+            return $this->asJson([
+                'status' => false,
+                'message' => $model->message,
+                'valid_message' => "",
+            ]);
+        } else {
+            $valid = $model->getErrors();
+
+            if (!array_key_exists("message", $valid)) {
+                $valid['message'] = false;
+            } else {
+                $valid['message'] = $valid['message'][0];
+            }
+
+            return $this->asJson([
+                'status' => true,
+                'message' => $model->message,
+                'valid_message' => $valid['message'],
+            ]);
+        }
+    }
+
     public function actionDelete()
     {
-        $post = Yii::$app->request->post(); 
+        $post = Yii::$app->request->post();
 
         $model = Comment::findOne($post['id_comment']);
 
         if ($model->delete()) {
             return $this->asJson([
-                    'status' => true,
-                ]);
+                'status' => true,
+            ]);
         } else {
             return $this->asJson([
-                    'status' => false,
-                ]);
+                'status' => false,
+            ]);
         };
     }
 }

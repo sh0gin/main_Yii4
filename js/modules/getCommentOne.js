@@ -10,12 +10,6 @@ function getCommentOne($oneCommentObject, $idActive, $role) {
 			$role = true;
 		}
 
-
-
-		console.log(!$role);
-		console.log($oneCommentObject.user.id == $idActive);
-
-
 		const el = `<li ` + ($oneCommentObject.comment_id ? `id='special-li'` : ``) + `class="comment">
 											
 		<div class="comment-body">
