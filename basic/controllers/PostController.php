@@ -144,23 +144,23 @@ class PostController extends AppController
         ]);
     }
 
-    public function actionGetPosts()
+    public function actionGetPosts($page = 0)
     {
 
         $post = Yii::$app->request->post();
         $model_user = new User2();
-
+        
         $query = Post::find();
         $provider = new ActiveDataProvider([
-            'query' =>$query->offset(10),
+            'query' =>$query,
             'pagination' => [
-                'pageSize' => 11,
+                'pageSize' => 10,
+                'page' => $post['number_page'],
             ],
             'sort' => ['defaultOrder' => ['date' => SORT_DESC]],
         ]);
-
+        
         $models = $provider->getModels();
-        // $this->printd($models); die;
         $result = [];
         $id = 0;
         $role = 0;
@@ -168,7 +168,7 @@ class PostController extends AppController
             $id = $model_user->findOne(['token' => $post['token']])->id;
             $role = $model_user->findOne(['token' => $post['token']])->id;
         }
-
+        
         foreach ($models as $model) {
             $user = $model_user->findOne($model->autor_id);
             $result[] = ['model' => $model, 'user' => $user, 'id' => $id, 'role' => $role,  'comments' => Comment::find()->where(['post_id' => $model->id])->count()];
@@ -176,6 +176,7 @@ class PostController extends AppController
 
         return $this->asJson([
             'models' => $result,
+            'totalCount' => $provider->totalCount,
         ]);
     }
 

@@ -56,7 +56,7 @@ class CommentController extends  AppController
         $post = Yii::$app->request->post();
         // $this->printd($post); 
         $model = new Comment();
-        $post['autor_id'] = User::findOne(['token' => $post['token']])->id;
+        $post['autor_id'] = User2::findOne(['token' => $post['token']])->id;
         unset($post['token']);
 
         // $this->printd($post); die;

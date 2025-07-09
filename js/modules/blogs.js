@@ -30,23 +30,26 @@ function getHtml($number) { // берём из getPosts.php массив с па
 			// console.log($response.models.result);
 			// console.log($response);
 			// getPosts - генерирует html код для одного поста в благах или индексе.
+
 			$response.models.forEach($value => $(".list-posts").append(getPosts($value)));
+
+			getHtmlPagination($number, $response['totalCount']);
 		},
 	});
 }
 
 function getFullPost($number_pagin = 0) { // отображает все посты на странице.
-
+	
 	let $url = `index.html?page=1`;
 	history.pushState({ page: 1 }, "", $url);
-
+	
 	if (!$number_pagin) {
 		$number_pagin = 0;
+	} else {
+		$number_pagin -= 1;
 	}
-
 	// history.pushState({}, "", $url);
 	getHtml($number_pagin);
-	getHtmlPagination($number_pagin);
 	blogsShow();
 
 	$(this).addClass("colorlib-active");
